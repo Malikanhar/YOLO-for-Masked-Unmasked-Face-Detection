@@ -58,7 +58,7 @@ if __name__ == "__main__":
                                     help="path to image folder")
     parser.add_argument("--o_train", type=str, default="train.tfrecord")
     parser.add_argument("--o_val", type=str, default="val.tfrecord")
-    parser.add_argument("--validation", type=int, default=10,
+    parser.add_argument("--validation", type=int, default=0.3,
                                     help="Validation ratio, with range 0 to 1")
 
     args = parser.parse_args()
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         }
         tf_example = create_tf_example(example)
         
-        if num <= args.validation:
+        if num <= val_num:
             writer_val.write(tf_example.SerializeToString())
         else:
             writer_train.write(tf_example.SerializeToString())
