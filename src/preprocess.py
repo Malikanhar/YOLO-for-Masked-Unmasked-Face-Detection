@@ -57,7 +57,7 @@ if __name__ == "__main__":
     parser.add_argument("dataset_path")
     parser.add_argument("--o_train", default="train.tfrecord")
     parser.add_argument("--o_val", default="val.tfrecord")
-    parser.add_argument("--validation", type=int, help="Validation amount")
+    parser.add_argument("--validation", type=float, help="Validation ratio")
 
     args = parser.parse_args()
 
@@ -69,6 +69,7 @@ if __name__ == "__main__":
 
     writer_train = tf.io.TFRecordWriter(args.o_train)
     writer_val = tf.io.TFRecordWriter(args.o_val)
+    val_num = int(args.validation * len(filenames))
     num = 0
     for img in tqdm(filenames, 'Loading image'):
         file = open(args.dataset_path+img, "rb").read()
@@ -97,7 +98,7 @@ if __name__ == "__main__":
         }
         tf_example = create_tf_example(example)
         
-        if num <= args.validation:
+        if num <= val_num:
             writer_val.write(tf_example.SerializeToString())
         else:
             writer_train.write(tf_example.SerializeToString())
