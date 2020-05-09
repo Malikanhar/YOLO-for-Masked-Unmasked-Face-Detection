@@ -52,26 +52,30 @@ def create_tf_example(example):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("annotation")
-    parser.add_argument("anchor")
-    parser.add_argument("dataset_path")
-    parser.add_argument("--o_train", default="train.tfrecord")
-    parser.add_argument("--o_val", default="val.tfrecord")
-    parser.add_argument("--validation", type=int, help="Validation amount")
+    parser.add_argument("--annotation", type=str, required=True,
+                                    help="input annotation filename with .json extensions")
+    parser.add_argument("--dataset", type=str, required=True,
+                                    help="path to image folder")
+    parser.add_argument("--o_train", type=str, default="train.tfrecord")
+    parser.add_argument("--o_val", type=str, default="val.tfrecord")
+    parser.add_argument("--validation", type=int, default=10,
+                                    help="Validation ratio, with range 0 to 1")
 
     args = parser.parse_args()
+    dataset_path = args.dataset
 
     with open(args.annotation, 'r') as file:
-        dataset = json.load(file)
+        data = json.load(file)
     
-    filenames = list(dataset.keys())
+    filenames = list(data.keys())
     random.shuffle(filenames)
 
     writer_train = tf.io.TFRecordWriter(args.o_train)
     writer_val = tf.io.TFRecordWriter(args.o_val)
+    val_num = int(args.validation * len(filenames))
     num = 0
     for img in tqdm(filenames, 'Loading image'):
-        file = open(args.dataset_path+img, "rb").read()
+        file = open(dataset_path+img, "rb").read()
         image = tf.image.decode_jpeg(file, channels=3)
         size = tf.shape(image)
         xs = []
@@ -79,7 +83,7 @@ if __name__ == "__main__":
         ws = []
         hs = []
         classes = []
-        for bbox in dataset[img]:
+        for bbox in data[img]:
             xs.append(bbox[0])
             ys.append(bbox[1])
             ws.append(bbox[2])

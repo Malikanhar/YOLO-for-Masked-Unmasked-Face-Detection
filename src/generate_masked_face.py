@@ -9,6 +9,7 @@ import json
 import face_recognition
 from PIL import Image
 from scipy.spatial import distance
+from tqdm import tqdm
 
 def load_json(filename):
     with open(filename) as f:
@@ -26,10 +27,9 @@ def copy_annotation(annotations):
         new_data.append(an.copy())
     return new_data
 
-def get_center_bbox(dict_bboxs):
+def get_center_bbox(bboxs):
     center_bboxs = []
-    for dict_bbox in dict_bboxs:
-        bbox = dict_bbox['bbox']
+    for bbox in bboxs:
         x = bbox[0]
         y = bbox[1]
         w = bbox[2]
@@ -113,11 +113,11 @@ def wear_mask(face_img, landmarks, annotations, mask_path, w_prop_thrs, save_no_
                 
                 id_bbox, distance_bbox_coor = get_corresponding_bbox(center_bboxs, relative_coor)
                 relative_mask_w = (rotated_mask.width / masked_face.width)
-                mask_w_prop = relative_mask_w / new_annotation[id_bbox]['bbox'][2]
-                if distance_bbox_coor > new_annotation[id_bbox]['bbox'][2] or mask_w_prop < w_prop_thrs:
+                mask_w_prop = relative_mask_w / new_annotation[id_bbox][2]
+                if distance_bbox_coor > new_annotation[id_bbox][2] or mask_w_prop < w_prop_thrs:
                     continue
                 else:
-                    new_annotation[id_bbox]['class'] = 1
+                    new_annotation[id_bbox][4] = 1
                     masked_face.paste(rotated_mask, coor, rotated_mask)
         new_annotations.append(new_annotation)
         masked_faces.append(np.array(masked_face))
@@ -154,7 +154,7 @@ def main():
     save_no_mask = args.save_original
     mask_w_prop = args.mask_proportion
 
-    annotations = []
+    annotations = {}
     
     data = load_json(in_json)
 
@@ -163,18 +163,15 @@ def main():
         os.mkdir(out_img_path)
 
     print('Start data augmentation')
-    for dt in data:
-        face_img = Image.open(os.path.join(in_img_path, dt['filename']))
+    for filename in tqdm(data.keys(), 'Processing'):
+        face_img = Image.open(os.path.join(in_img_path, filename))
         landmarks = face_recognition.face_landmarks(np.array(face_img))
-        face_masks, mask_annotation = wear_mask(face_img, landmarks, dt['objects'], mask_path, mask_w_prop, save_no_mask)
+        face_masks, mask_annotation = wear_mask(face_img, landmarks, data.get(filename), mask_path, mask_w_prop, save_no_mask)
         for i, face_mask in enumerate(face_masks):
             id_img = len(glob.glob(out_img_path + '/*'))
             filename = os.path.join(out_img_path, str(id_img)) + '.jpg'
             cv2.imwrite(filename, cv2.cvtColor(face_mask, cv2.COLOR_RGB2BGR))
-            annotations.append({
-                'filename' : filename,
-                'objects' : mask_annotation[i]
-            })
+            annotations[filename] = mask_annotation[i]
 
     print('Augmented images saved at ' + out_img_path)
     save_json(annotations, out_json)

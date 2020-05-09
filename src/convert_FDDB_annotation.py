@@ -31,7 +31,7 @@ def main():
     image_path = args.dataset
     json_filename = args.json
 
-    new_annotation = []
+    new_annotation = {}
     err_count = 0
 
     for file in os.listdir(annotation_path):
@@ -77,20 +77,17 @@ def main():
                             print("Y + H : {} should be smaller than {} in {}".format(y+h, height, file_name[:-1]))
                             h = height - y
                             err_count += 1
+                        if h == 0 or w == 0:
+                            print('skipping bbox with no area')
+                            continue
 
                         x = x / width
                         y = y / height
                         w = w / width
                         h = h / height
 
-                        objects.append({
-                            "bbox" : [x, y, w, h],
-                            "class" : 0
-                        })
-                    new_annotation.append({
-                        "filename": file_name[:-1] + '.jpg',
-                        "objects": objects
-                    })
+                        objects.append([x, y, w, h, 0])
+                    new_annotation[file_name[:-1] + '.jpg'] = objects
                     file_name = file.readline()
 
     print('Total annotations fixed : {}'.format(err_count))
