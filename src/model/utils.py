@@ -125,10 +125,10 @@ def draw_outputs(img, outputs, class_names):
     wh = np.flip(img.shape[0:2])
     colors = [(255, 255, 0), (255, 0, 255), (0, 255, 255), (255, 0, 0), (0, 255, 0), (0, 0, 255)]
 
-    fontpath = "./model/Ubuntu-Medium.ttf"     
-    font = ImageFont.truetype(fontpath, 25)
-    img_pil = Image.fromarray(img)
-    draw = ImageDraw.Draw(img_pil)
+    # fontpath = "arial.ttf"
+    # font = ImageFont.truetype(fontpath, 25)
+    # img_pil = Image.fromarray(img)
+    # draw = ImageDraw.Draw(img_pil)
 
     for i in range(nums):
         x1y1 = tuple((np.array(boxes[i][0:2]) * wh).astype(np.int32))
@@ -142,21 +142,21 @@ def draw_outputs(img, outputs, class_names):
             t1 = (x1y1[0], x1y1[1] - th)
         t2 = (t1[0] + tw, t1[1] + th)
         
-        draw.rectangle([x1y1, x2y2], outline=color, width=3)
-        draw.rectangle([t1, t2], fill=color)
+        # draw.rectangle([x1y1, x2y2], outline=color, width=3)
+        # draw.rectangle([t1, t2], fill=color)
         
-        draw.text(t1, text, font=font, fill=(0, 0, 0))
+        # draw.text(t1, text, font=font, fill=(0, 0, 0))
 
 
 
 
-        # img = cv2.rectangle(img, x1y1, x2y2, color, 3)
-        # img = cv2.rectangle(img, (x1y1[0]-1, x1y1[1] - 20), (x1y1[0]+(len(text)*15), x1y1[1]), color, -1)
+        img = cv2.rectangle(img, x1y1, x2y2, color, 3)
+        img = cv2.rectangle(img, (x1y1[0]-1, x1y1[1] - 20), (x1y1[0]+(len(text)*15), x1y1[1]), color, -1)
 
-        # img = cv2.putText(img, text, (x1y1[0], x1y1[1]-5), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), 2)
+        img = cv2.putText(img, text, (x1y1[0], x1y1[1]-5), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), 2)
         
-        # img = cv2.putText(img, '{} {:.1f}'.format(
-        #     class_names[int(classes[i])], objectness[i]),
-        #     x1y1, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
+        img = cv2.putText(img, '{} {:.1f}'.format(
+            class_names[int(classes[i])], objectness[i]),
+            x1y1, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
     img = np.array(img_pil)
     return img

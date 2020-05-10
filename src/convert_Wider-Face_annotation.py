@@ -18,7 +18,7 @@ def main():
     image_path = args.dataset
     json_filename = args.json
 
-    new_annotation = []
+    new_annotation = {}
     err_count = 0
 
     with open(os.path.join(annotation_file), 'r') as file:
@@ -42,14 +42,8 @@ def main():
                 w = w / width
                 h = h / height
 
-                objects.append({
-                    "bbox" : [x, y, w, h],
-                    "class" : 0
-                })
-            new_annotation.append({
-                "filename": file_name[:-1],
-                "objects": objects
-            })
+                objects.append([x, y, w, h, 0])
+            new_annotation[file_name[:-1]] = objects
             file_name = file.readline()
 
     with open(json_filename, 'w') as f:
