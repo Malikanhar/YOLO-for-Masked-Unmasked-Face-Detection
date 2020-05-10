@@ -3,6 +3,7 @@ from model.utils import load_darknet_weights
 from model.yolo import YoloV3
 from argparse import ArgumentParser
 import numpy as np
+import logging
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -26,8 +27,5 @@ if __name__ == "__main__":
     img = np.random.random((1, 320, 320, 3)).astype(np.float32)
     output = yolo(img)
     logging.info('sanity check passed')
-    yolo.save_weight(args.output)
+    yolo.darknet53.save_weights(args.output)
     print('Weights saved')
-
-
-
