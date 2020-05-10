@@ -54,27 +54,27 @@ def main():
                         x, y, w, h = find_dimension(major_radius, minor_radius, angle, cx, cy)
                         
                         if x < 0:
-                            print("X : {} should be larger than 0 in {}".format(x, file_name[:-1]))
+                            print("X = {} should be larger than 0 in {} | fixing..".format(x, file_name[:-1]))
                             x = 0
                             err_count += 1
                         elif x > width:
-                            print("X : {} should be smaller than {} in {}".format(x, width, file_name[:-1]))
+                            print("X = {} should be smaller than {} in {} | fixing..".format(x, width, file_name[:-1]))
                             x = width
                             err_count += 1
                         if y < 0:
-                            print("Y : {} should be larger than 0 in {}".format(y, file_name[:-1]))
+                            print("Y = {} should be larger than 0 in {} | fixing..".format(y, file_name[:-1]))
                             y = 0
                             err_count += 1
                         elif y > height:
-                            print("Y : {} should be smaller than {} in {}".format(x, height, file_name[:-1]))
+                            print("Y = {} should be smaller than {} in {} | fixing..".format(x, height, file_name[:-1]))
                             y = height
                             err_count += 1
                         if x + w > width:
-                            print("X + W : {} should be smaller than {} in {}".format(x+w, width, file_name[:-1]))
+                            print("X + W = {} should be smaller than {} in {} | fixing..".format(x+w, width, file_name[:-1]))
                             w = width - x
                             err_count += 1
                         if y + h > height:
-                            print("Y + H : {} should be smaller than {} in {}".format(y+h, height, file_name[:-1]))
+                            print("Y + H = {} should be smaller than {} in {} | fixing..".format(y+h, height, file_name[:-1]))
                             h = height - y
                             err_count += 1
                         if h == 0 or w == 0:
