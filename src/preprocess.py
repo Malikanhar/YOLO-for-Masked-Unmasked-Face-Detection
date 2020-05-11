@@ -58,7 +58,7 @@ if __name__ == "__main__":
                                     help="path to image folder")
     parser.add_argument("--o_train", type=str, default="train.tfrecord")
     parser.add_argument("--o_val", type=str, default="val.tfrecord")
-    parser.add_argument("--validation", type=int, default=0.3,
+    parser.add_argument("--validation", type=float, default=0.3,
                                     help="Validation ratio, with range 0 to 1")
 
     args = parser.parse_args()

@@ -19,7 +19,7 @@ def load_json(filename):
 def save_json(data, filename):
     with open(filename, 'w') as f:
         json.dump(data, f)
-    print('annotation saved at ' + filename)
+    print('Annotation saved at ' + filename)
 
 def copy_annotation(annotations):
     new_data = []

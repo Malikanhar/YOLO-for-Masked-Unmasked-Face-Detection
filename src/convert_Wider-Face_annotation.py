@@ -37,6 +37,36 @@ def main():
                 w = float(w)
                 h = float(h)
 
+                if x < 0:
+                    print("X = {} should be larger than 0 in {} | fixing..".format(x, file_name[:-1]))
+                    x = 0
+                    err_count += 1
+                elif x > width:
+                    print("X = {} should be smaller than {} in {} | skipping..".format(x, width, file_name[:-1]))
+                    x = width
+                    err_count += 1
+                    continue
+                if y < 0:
+                    print("Y = {} should be larger than 0 in {} | fixing..".format(y, file_name[:-1]))
+                    y = 0
+                    err_count += 1
+                elif y > height:
+                    print("Y = {} should be smaller than {} in {} | skipping..".format(x, height, file_name[:-1]))
+                    y = height
+                    err_count += 1
+                    continue
+                if x + w > width:
+                    print("X + W = {} should be smaller than {} in {} | fixing..".format(x+w, width, file_name[:-1]))
+                    w = width - x
+                    err_count += 1
+                if y + h > height:
+                    print("Y + H = {} should be smaller than {} in {} | fixing..".format(y+h, height, file_name[:-1]))
+                    h = height - y
+                    err_count += 1
+                if h == 0 or w == 0:
+                    print('skipping bbox with no area')
+                    continue
+
                 x = x / width
                 y = y / height
                 w = w / width
