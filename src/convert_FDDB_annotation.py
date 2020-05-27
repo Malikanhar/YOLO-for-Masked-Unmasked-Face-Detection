@@ -78,7 +78,7 @@ def main():
                             h = height - y
                             err_count += 1
                         if h == 0 or w == 0:
-                            print('skipping bbox with no area')
+                            print('skipping bbox with no area with x {} y {} w {} h {} in {}'.format(x, y, w, h, file_name[:-1]))
                             continue
 
                         x = x / width

@@ -68,16 +68,19 @@ def save(filename, X, centroids):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("input", help="Input file")
-    parser.add_argument("output", help="output file")
-    parser.add_argument("cluster", type=int, help="Cluster num")
+    parser.add_argument("--annotation", type=str, required=True,
+                                    help="Input file")
+    parser.add_argument("--out_txt", type=str, default="anchor.txt",
+                                    help="output txt file")
+    parser.add_argument("--cluster", type=int, default=9,
+                                    help="number of anchor")
     parser.add_argument("--image_width", type=int, help="Image width", default=416)
     parser.add_argument("--image_height", type=int, help="Image height", default=416)
     args = parser.parse_args()
 
-    print("Reading "+args.input)
+    print("Reading "+args.annotation)
     
-    with open(args.input, "r") as file:
+    with open(args.annotation, "r") as file:
         input_file = json.load(file)
 
     print("Parsing file")
@@ -94,22 +97,4 @@ if __name__ == "__main__":
     print("Doing kmeans")
     centroids = kmeans(boxes, centroids)
     print("Saving")
-    save(args.output, boxes, centroids)
-
-
-
-# [[118.33484874 254.73511602]
-#  [247.75627374 348.01457873]
-#  [499.75480582 417.67800671]
-#  [ 17.70587606  21.21301458]
-#  [137.57987237  66.678763  ]
-#  [ 45.11539986  53.22765177]
-#  [197.21641298 149.3543668 ]
-#  [438.87078458 185.19538099]
-#  [ 68.77272232 130.85670911]]
-
-    
-    
-
-
-
+    save(args.out_txt, boxes, centroids)
